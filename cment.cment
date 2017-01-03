@@ -1,0 +1,3 @@
+# cment's own dependencies
+timlukins/ogdl-c >= 1.0.1
+timlukins/argparse >= 1.0.1
