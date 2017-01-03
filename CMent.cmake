@@ -50,7 +50,7 @@ add_dependencies(ogdl-c ogdl-c_External)
 ExternalProject_Add(
         argparse_External
         GIT_REPOSITORY "https://github.com/timlukins/argparse"
-        GIT_TAG "v1.0.1"
+        GIT_TAG "1.0.1"
         UPDATE_COMMAND ""
         PATCH_COMMAND ""
         SOURCE_DIR "${CMAKE_SOURCE_DIR}/dep/argparse"
@@ -74,5 +74,5 @@ include_directories(
         ${CMAKE_BINARY_DIR}/bin/ogdl-c/include
         ${CMAKE_BINARY_DIR}/bin/argparse/include
         )
-target_link_libraries(${PROJECT_NAME} ogdl argparse)
+target_link_libraries(${PROJECT_NAME} ogdl-c argparse)
 add_dependencies(${PROJECT_NAME} ogdl-c argparse)
