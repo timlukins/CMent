@@ -62,70 +62,54 @@ char footer[] = {"\
 add_dependencies(${PROJECT_NAME} ogdl-c)                                        \
 "};
 
+/*
+ * Main entry point.  Start here.
+ */
 
 int main(int argc, char **argv)
 {
-    char *path, rootstr[128];
+    /*char *path, rootstr[128];*/
     Graph g;
-    FILE *f = stdin;
+    FILE *f;
     OgdlParser parser;
     int index=1, maxLevel=-1, indent=2, root=0;
 
-    if (argc==1) {
+    /* Check we have got the necessary cment file */
+
+    if (argc!=2)
+    {
         puts("cment");
-        puts("usage \\\n  cment [-d depth] [-n indent] [-r] <path> [file]");
+        puts("usage \\\n  cment [file.cment]");
         puts("version " VERSION);
         exit(1);
     }
-
-    while (1) {
-      if (!strncmp(argv[index],"-d",2)) {
-        maxLevel = atoi(argv[index+1]);
-        argc-=2;
-        index+=2;
-      }
-      else if (!strncmp(argv[index],"-n",2)) {
-        indent = atoi(argv[index+1]);
-        argc-=2;
-        index+=2;
-        if (indent == 0) indent = 1;
-      }
-      else if (!strcmp(argv[index],"-r")) {   
-        argc--;
-        index++;
-        root = 1;
-      }
-      else 
-        break;
-    }
-    // first non option is path (mandatory)
-    path = argv[index++];
-    argc--;
-
-    if (argc > 1) {
+    else
+    {
         f = fopen(argv[index],"r");
         if (!f) {
             printf ("File %s not found\n",argv[index]);
             exit(1);
         }
-        /* set the root text to the file name */
-        //fbasename(rootstr,argv[index]);
     }
-    //else
-    strcpy(rootstr,"root");
+
+    /* Create the parser and parse the file contents */
    
     parser = OgdlParser_new();
     OgdlParser_parse(parser,f);
     fclose(f); 
 
+    /* Check OK. */
+
     if (! parser->g || ! parser->g[0]) 
         exit(1);
+
+    /* If so, get the graph. */
+
     g = parser->g[0];
+    Graph_setName(g,"root");
+    g = Graph_get(g,".");
 
-    Graph_setName(g,rootstr);
-
-    if (strcmp(".",path)) 
-         g = Graph_get(g,path);
+    /* Step through graph. */
 
     if (g) {
         if (root) 
@@ -137,6 +121,8 @@ int main(int argc, char **argv)
         else
             Graph_fprint(g,stdout,maxLevel,indent,1);
     }
+
+    /* Tidy up */
 
     OgdlParser_free(parser);
     exit(g?0:1);

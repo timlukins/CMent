@@ -40,7 +40,7 @@ ExternalProject_Add_Step(
 )
 add_library(ogdl-c IMPORTED STATIC GLOBAL)
 set_target_properties(ogdl-c PROPERTIES
-        IMPORTED_LOCATION                 "${CMAKE_BINARY_DIR}/bin/ogdl-c/lib/libogdl.a")
+        IMPORTED_LOCATION                 "${CMAKE_BINARY_DIR}/bin/ogdl-c/lib/${CMAKE_FIND_LIBRARY_PREFIXES}ogdl.a")
 add_dependencies(ogdl-c ogdl-c_External)
 
 ###############################################################################
@@ -65,7 +65,7 @@ ExternalProject_Add_Step(
 )
 add_library(argparse IMPORTED STATIC GLOBAL)
 set_target_properties(argparse PROPERTIES
-        IMPORTED_LOCATION                 "${CMAKE_BINARY_DIR}/bin/argparse/lib/libargparse.a")
+        IMPORTED_LOCATION                 "${CMAKE_BINARY_DIR}/bin/argparse/lib/${CMAKE_FIND_LIBRARY_PREFIXES}argparse.a")
 add_dependencies(argparse argparse_External)
 
 ###############################################################################

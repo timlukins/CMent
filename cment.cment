@@ -1,3 +1,4 @@
-# cment's own dependencies
-timlukins/ogdl-c >= v1.0.1
-timlukins/argparse >= 1.0.1
+# cment's own dependencies...
+cment 1.0.0 # this defines the version of the result!
+    timlukins/ogdl-c >= v1.0.1
+    timlukins/argparse >= 1.0.1
