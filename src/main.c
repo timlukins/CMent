@@ -46,6 +46,7 @@ char dependency[] = {
 "    SOURCE_DIR \"${CMAKE_SOURCE_DIR}/dep/%s\"\n"
 "    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${GLOBAL_OUTPUT_PATH}/%s\n"
 "    TEST_COMMAND \"\"\n"
+"    STAMP_DIR \"${CMAKE_SOURCE_DIR}/dep/\"\n"
 ")\n"
 "ExternalProject_Add_Step(\n"
 "    %s_External CopyToBin\n"
@@ -63,11 +64,10 @@ char footer[] = {
 "###############################################################################\n"
 "\n"
 "include_directories(\n"
-"        ${CMAKE_BINARY_DIR}/bin/ogdl-c/include\n"
-"        ${CMAKE_BINARY_DIR}/bin/argparse/include\n"
+"        %s\n"
 "        )\n"
-"target_link_libraries(${PROJECT_NAME} ogdl-c argparse)\n"
-"add_dependencies(${PROJECT_NAME} ogdl-c argparse)\n"
+"target_link_libraries(${PROJECT_NAME} %s)\n"
+"add_dependencies(${PROJECT_NAME} %s)\n"
 };
 
 /*

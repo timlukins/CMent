@@ -31,6 +31,7 @@ ExternalProject_Add(
     SOURCE_DIR "${CMAKE_SOURCE_DIR}/dep/ogdl-c"
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${GLOBAL_OUTPUT_PATH}/ogdl-c
     TEST_COMMAND ""
+        STAMP_DIR "${CMAKE_SOURCE_DIR}/dep/"
 )
 ExternalProject_Add_Step(
     ogdl-c_External CopyToBin
@@ -56,6 +57,7 @@ ExternalProject_Add(
         SOURCE_DIR "${CMAKE_SOURCE_DIR}/dep/argparse"
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${GLOBAL_OUTPUT_PATH}/argparse
         TEST_COMMAND ""
+        STAMP_DIR "${CMAKE_SOURCE_DIR}/dep/"
 )
 ExternalProject_Add_Step(
         argparse_External CopyToBin
