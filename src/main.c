@@ -71,12 +71,28 @@ char footer[] = {
 };
 
 /*
+ * Struct for a dependency.
+ */
+
+typedef struct {
+    char* repo;
+    char* tag;
+    char* name;
+    char* match;
+} Dep;
+
+/*
  * Main function for recursing through the graph.
+ * NOTE: need to do depth first - then reverse.
  */
 
 int
 recurse_graph(Graph g, FILE* outfile, int at, char** deps)
 {
+    enum State {TARGET,TARGET_VERSION,DEP_REPO,DEP_MATCH,DEP_TAG,DEP_NAME};
+
+    Dep found;
+
     int j;
     for (int k=0; k<=at; k++)
     {
@@ -102,6 +118,9 @@ main(int argc, char **argv)
     OgdlParser parser;
     char** deps;
     struct argparse argparse;
+
+    char* target;
+    char* version;
 
     /* Set-up argparse info and options. */
 
@@ -159,6 +178,20 @@ main(int argc, char **argv)
     /* Write the header. */
 
     fwrite(header,1,sizeof(header),d);
+
+    /* Get the target from the graph .*/
+
+    if (g)
+    {
+        /* Skip root */
+        if (strcmp(g->name),"root" && g->size==1)
+        {
+            g = g->nodes[0];
+            printf("[%s]\n",g->name);
+        }
+        printf("%s\n",g->name);
+    }
+
 
     /* Recurse through graph and write out. */
 
