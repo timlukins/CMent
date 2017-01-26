@@ -57,7 +57,7 @@ char dependency[] = {
 "add_library(%s IMPORTED STATIC GLOBAL)\n"
 "set_target_properties(%s PROPERTIES\n"
 "        IMPORTED_LOCATION                 \"${CMAKE_BINARY_DIR}/bin/%s/lib/${CMAKE_FIND_LIBRARY_PREFIXES}%s.a\")\n"
-"add_dependencies(%s %s_External)"
+"add_dependencies(%s %s_External)\n\n"
 };
 
 char footer[] = {
@@ -71,39 +71,45 @@ char footer[] = {
 };
 
 /*
- * Struct for a dependency.
- */
-
-typedef struct {
-    char* repo;
-    char* tag;
-    char* name;
-    char* match;
-} Dep;
-
-/*
  * Main function for recursing through the graph.
  * NOTE: need to do depth first - then reverse.
  */
 
-int
-recurse_graph(Graph g, FILE* outfile, int at, char** deps)
+char*
+recurse_graph(Graph g, FILE* outfile, int level, char* parent, char* grandparent, char* target)
 {
-    enum State {TARGET,TARGET_VERSION,DEP_REPO,DEP_MATCH,DEP_TAG,DEP_NAME};
+    int i,j,k;
+    char *repo, *tag, *name = NULL;
+    char* deps;
 
-    Dep found;
+    if (strcmp(g->name,"root")==0) /* Root node - get name of target */
+    {
+        target = g->nodes[0]->name;
+        /*printf("%s\n",target);*/
+    }
+    else if (g->size==0 ) /* Leaf node - output dependency info! */
+    {
+        repo = g->name;
+        tag = parent;
+        name = grandparent;
+        /*
+        printf("%s\n",name);
+        printf("%s\n",repo);
+        printf("%s\n",tag);
+        */
+        fprintf(outfile,dependency,
+            name,name,repo,tag,name,name,name,name,name,name,name,name,name,name,name); /* Strewth */
 
-    int j;
-    for (int k=0; k<=at; k++)
-    {
-        printf("\t");
     }
-    printf("%s\n",g->name);
-    for (int i=0; i<g->size; i++)
+
+    /* Depth first search through rest... */
+
+    for (i = 0; i < g->size; i++)
     {
-        j = recurse_graph(g->nodes[i], outfile, at + 1, deps);
+        deps = recurse_graph(g->nodes[i], outfile, level + 1, g->name, parent, target);
     }
-    return j;
+
+    return deps;
 }
 
 /*
@@ -116,7 +122,6 @@ main(int argc, char **argv)
     Graph g;
     FILE *f, *d;
     OgdlParser parser;
-    char** deps;
     struct argparse argparse;
 
     char* target;
@@ -169,7 +174,7 @@ main(int argc, char **argv)
 
     g = parser->g[0];
     Graph_setName(g,"root");
-    g = Graph_get(g,".");
+    //g = Graph_get(g,".");
 
     /* Open the output file. */
 
@@ -179,29 +184,11 @@ main(int argc, char **argv)
 
     fwrite(header,1,sizeof(header),d);
 
-    /* Get the target from the graph .*/
-
-    if (g)
-    {
-        /* Skip root */
-        if (strcmp(g->name),"root" && g->size==1)
-        {
-            g = g->nodes[0];
-            printf("[%s]\n",g->name);
-        }
-        printf("%s\n",g->name);
-    }
-
-
-    /* Recurse through graph and write out. */
+    /* Recurse through graph depth-first and write out. */
 
     if (g) {
-        recurse_graph(g,d,0,deps);
+        recurse_graph(g,d,0,NULL,NULL,NULL);
     }
-
-    /* Write the footer. */
-
-    //char*
 
     /* Tidy up */
 

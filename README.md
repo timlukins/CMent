@@ -12,19 +12,21 @@ It is **not** a curated and centralised dependency manager. For that, you might 
 
 Instead, `cment` is a _de-centralised_ and _developer driven_ tool. (So, a bit more like [Carthage](https://github.com/Carthage/Carthage) is to [CocoaPods](https://github.com/CocoaPods/CocoaPods)...)
 
-As such, it aims to be lightweight and to fulfill a number of common developer use-cases:
+Underneath, it leverages the use of `ExternalProject` with a few clever tricks and checks to basically simplify and reduce error. T
 
-* The need to simple resolve local (i.e. non-system wide installed) libraries for build.
-* The need to build and link a debug version of a library really easily and cleanly.
-* The need to check and enforce the build order of depedencies.
-* The need to include a specific version of a library or libraries (or HEAD) is not available.
-* The need (above all else) to dictate and trace components of a release more exactly.
+As such, it aims to be lightweight and to fulfill a number of common use-cases:
+
+* The need to simply resolve local (i.e. non-system wide installed) libraries for build.
+* The need to build and link to a isolated debug version of a library cleanly.
+* The need to check and enforce the build order of depedencies easily.
+* The need to include a specific version of a library (or development branch HEAD).
+* The need (probably above all else) to dictate and trace components of a release exactly.
 
 ### Usage
 
 CMent is itself build with CMent! 
 
-The target and it's dependencies are specified in a simple file based on a [Ordered Graph Data Language](http://ogdl.org) format. 
+The target and its dependencies are specified in a simple file based on a [Ordered Graph Data Language](http://ogdl.org) format. 
 
 Here's its own `.cment` file...
 
@@ -36,7 +38,7 @@ Fairly obviously, the target itself (and version) are at the top.
 
 Then each dependency repository (*which must also be CMake based and hosted on github*) is included along with a specifier for the release tag to use.
 
-Dependencies are **indented** to indicate sub-dependencies.
+Dependencies are **indented** to indicate respective sub-dependencies.
 
 For a specific dependency the name of resulting artifact can also be quoted (e.g. `"ogdl"`) - which is useful if it differs from the name of the repository.
 
@@ -66,7 +68,7 @@ If the `CMakeLists.txt` includes any other `FindPackage` or `pkg_check_modules` 
 
 If you want to build a debug version, then the same flags should automatically be passed down to the dependencies.
 
-Building and linking archive libraries is fine - but if the dependencies are built as shared you will have to update your `LD_LIBRARY_PATH` to point at the `./deps/lib/` folder.
+Building and linking archive libraries is fine - but if the dependencies are built as shared you will have to update your `LD_LIBRARY_PATH` to point at the `./deps/lib/` folder first (i.e. before system wide libraries).
 
 Obviously, if you change the project (i.e. need a new version of a library) you must update the `.cment` file and regenerate the `CMent.cmake` file from it.
 
