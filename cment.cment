@@ -1,4 +1,4 @@
 # cment's own dependencies...
 cment
-    odgl v1.0.1 timlukins/ogdl-c
+    odgl v1.0.1 rveen/ogdl-c
     argparse master timlukins/argparse
